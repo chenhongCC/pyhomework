@@ -2,7 +2,7 @@ import requests,jieba,wordcloud
 from bs4 import BeautifulSoup
 comments=open('comments.txt','w+',encoding='utf-8')
 
-for i in range(5):
+for i in range(5):#目前只爬取前100条热评，可以增加
     allurl='https://movie.douban.com/subject/27010768/reviews?start='+str(i*20)
     res=requests.get(allurl)
     html=res.text
@@ -11,13 +11,13 @@ for i in range(5):
     #print(items)
     for item in items:
         comment_url=item.find('a')['href']
-        #print(comment_url)
+        #print(comment_url) #热评列表没有展示每个热评的全文，测试是否拿到热评全文的链接
         res2=requests.get(comment_url)
         html2=res2.text
         soup2=BeautifulSoup(html2,'html.parser')
-        items2=soup2.find('div',class_="article").find('div',id="link-report").find_all('p')
+        items2=soup2.find('div',class_="article").find('div',id="link-report").find_all('p')#热评全文的文字部分，不需要图片和其他非文本信息
         for item2 in items2:
-                #print(item2.text)
+                #print(item2.text) #测试是否拿到纯文本热评内容
                 comments.writelines(item2.text)
 comments.close()
 f=open('comments.txt','r',encoding='UTF-8')
